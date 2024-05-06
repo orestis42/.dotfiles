@@ -1,4 +1,6 @@
 # Alacritty Terminal Configuration 
+[env]
+TERM = "xterm-256color"
 
 [window]
 opacity = 0.9
