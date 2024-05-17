@@ -5,6 +5,10 @@ HISTSIZE=1000
 SAVEHIST=1000
 setopt appendhistory
 
+# Start the ssh-agent and add the GitHub SSH key
+eval "$(ssh-agent -s)" > /dev/null
+ssh-add ~/.ssh/github > /dev/null 2>&1
+
 # Set Vim mode
 set -o vi
 export KEYTIMEOUT=1
