@@ -1,56 +1,79 @@
-# Set the default shell options
-export ZSH=$HOME
-HISTFILE=$ZSH/.zsh_history
-HISTSIZE=1000
-SAVEHIST=1000
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Set the directory we want to store zinit and plugins
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+
+# Download Zinit, if it's not there yet
+if [ ! -d "$ZINIT_HOME" ]; then
+   mkdir -p "$(dirname $ZINIT_HOME)"
+   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+# Source/Load zinit
+source "${ZINIT_HOME}/zinit.zsh"
+
+# Add in Powerlevel10k
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+
+# Add in zsh plugins
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+zinit light Aloxaf/fzf-tab
+
+# Add in snippets
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::archlinux
+zinit snippet OMZP::aws
+zinit snippet OMZP::kubectl
+zinit snippet OMZP::kubectx
+zinit snippet OMZP::command-not-found
+
+# Load completions
+autoload -Uz compinit && compinit
+
+zinit cdreplay -q
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Keybindings
+bindkey -e
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
+bindkey '^[w' kill-region
+
+# History
+HISTSIZE=5000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+HISTDUP=erase
 setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
 
-# Start the ssh-agent and add the GitHub SSH key
-eval "$(ssh-agent -s)" > /dev/null
-ssh-add ~/.ssh/github > /dev/null 2>&1
+# Completion styling
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-# Set Vim mode
-set -o vi
-export KEYTIMEOUT=1
+# Aliases
+alias ls='ls --color'
+alias vim='nvim'
+alias c='clear'
 
-# Enable command auto-completion
-autoload -Uz compinit
-compinit
-
-# Check if 'menuselect' keymap is available, then set bindings
-if (( ${+widgets[menu-select]} )); then
-  bindkey -M menuselect 'h' vi-backward-char
-  bindkey -M menuselect 'j' vi-down-line-or-history
-  bindkey -M menuselect 'k' vi-up-line-or-history
-  bindkey -M menuselect 'l' vi-forward-char
-fi
-
-# Enhanced prompt with special characters
-autoload -U colors && colors
-setopt PROMPT_SUBST
-PROMPT='%F{cyan}%n@%m %F{magenta}-> %1~ %F{green}$(git_branch)%F{none}
-%F{green}$%f '
-
-# Function to get current git branch in a clean format with a special character
-git_branch() {
-  local branch
-  branch=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
-  [[ -n $branch ]] && echo "%F{red} $branch%f "
-}
-
-# Aliases for convenience and speed
-alias ll='ls -alF --color=auto'
-alias la='ls -A --color=auto'
-alias l='ls -CF --color=auto'
-
-# Git aliases for quick command execution
-alias gs='git status'
-alias gc='git commit'
-alias gp='git push'
-alias gl='git pull'
-
-# Source syntax highlighting if it exists
-if [ -d "$HOME/.zsh-syntax-highlighting" ]; then
-  source "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi
-
+# Shell integrations
+eval "$(fzf --zsh)"
+eval "$(zoxide init --cmd cd zsh)"
