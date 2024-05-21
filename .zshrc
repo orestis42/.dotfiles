@@ -73,9 +73,18 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 alias ls='ls --color'
 alias ll='ls -lah --color'
 alias vim='nvim'
-alias c='clear && nice > /dev/null 2>&1'
 
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
+
+# Start ssh-agent if it's not already running
+if [ -z "$SSH_AGENT_PID" ]; then
+    eval "$(ssh-agent -s)" > /dev/null
+fi
+
+# Add the SSH key if it's not already added
+if ! ssh-add -l | grep -q "o.r.e.s.t.i.s@hotmail.com"; then
+    ssh-add ~/.ssh/github > /dev/null 2>&1
+fi
 
