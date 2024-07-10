@@ -37,3 +37,8 @@ require "nvchad.autocmds"
 vim.schedule(function()
   require "mappings"
 end)
+
+-- Set background to transparent
+vim.cmd("highlight Normal guibg=none ctermbg=none")
+vim.cmd("highlight NonText guibg=none ctermbg=none")
+
