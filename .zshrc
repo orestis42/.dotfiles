@@ -33,7 +33,8 @@ zinit snippet OMZP::archlinux
 zinit snippet OMZP::aws
 zinit snippet OMZP::kubectl
 zinit snippet OMZP::kubectx
-zinit snippet OMZP::command-not-found
+# Commenting out the command-not-found snippet to avoid errors
+# zinit snippet OMZP::command-not-found
 
 # Load completions
 autoload -Uz compinit && compinit
@@ -87,5 +88,13 @@ fi
 # Add the SSH key if it's not already added
 if ! ssh-add -l | grep -q "o.r.e.s.t.i.s@hotmail.com"; then
     ssh-add ~/.ssh/github > /dev/null 2>&1
+fi
+
+# Suppress Powerlevel10k warning
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+
+# Resolve DBI errors by checking if nixos database exists
+if [ -f /nix/var/nix/profiles/per-user/root/channels/nixos/programs.sqlite ]; then
+  zinit snippet OMZP::command-not-found
 fi
 
