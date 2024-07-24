@@ -65,6 +65,7 @@ alias ls='ls --color'
 alias ll='ls -lah --color'
 alias vim='nvim'
 alias c="clear"
+alias nix-shell="nix-shell --run zsh"
 
 # Shell integrations
 eval "$(fzf --zsh)"
