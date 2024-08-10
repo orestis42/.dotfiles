@@ -13,6 +13,9 @@ vim.opt.rtp:prepend(lazypath)
 
 local lazy_config = require "configs.lazy"
 
+-- Add highlight group definition for IblChar
+vim.api.nvim_set_hl(0, 'IblChar', { fg = '#3E4452', bg = 'NONE' })
+
 -- load plugins
 require("lazy").setup({
   {
@@ -26,6 +29,18 @@ require("lazy").setup({
   },
 
   { import = "plugins" },
+
+  -- Ensure that indent-blankline.nvim is correctly configured
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    config = function()
+      require("ibl").setup({
+        char = '│',
+        filetype_exclude = { 'help', 'packer' },
+        buftype_exclude = { 'terminal', 'nofile' },
+      })
+    end,
+  },
 }, lazy_config)
 
 -- load theme

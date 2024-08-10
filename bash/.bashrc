@@ -1,4 +1,5 @@
 # Enable Starship prompt
+export PATH="$HOME/.cargo/bin:$PATH"
 eval "$(starship init bash)"
 
 # Ensure necessary tools are installed (fzf, zoxide, Starship, etc.)
@@ -14,12 +15,14 @@ if ! command -v starship &> /dev/null; then
   echo "Starship not found, please install it."
 fi
 
-# Keybindings
-bind '"\C-p": "\e[A"'
-bind '"\C-n": "\e[B"'
-bind '"\e[1~": beginning-of-line'
-bind '"\e[4~": end-of-line'
-bind '"\e[5~": kill-whole-line'
+# Keybindings - only bind if the shell is interactive
+if [[ $- == *i* ]]; then
+  bind '"\C-p": "\e[A"'
+  bind '"\C-n": "\e[B"'
+  bind '"\e[1~": beginning-of-line'
+  bind '"\e[4~": end-of-line'
+  bind '"\e[5~": kill-whole-line'
+fi
 
 # History
 HISTSIZE=5000
@@ -29,8 +32,10 @@ shopt -s histappend
 shopt -s cmdhist
 
 # Completion settings
-bind 'set completion-ignore-case on'
-bind 'set show-all-if-ambiguous on'
+if [[ $- == *i* ]]; then
+  bind 'set completion-ignore-case on'
+  bind 'set show-all-if-ambiguous on'
+fi
 
 # Aliases
 alias ls='ls --color=auto'
@@ -64,4 +69,6 @@ fi
 
 # Final settings
 shopt -s checkwinsize
+
+export PATH=$HOME/.local/bin:$PATH
 

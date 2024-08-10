@@ -68,6 +68,7 @@ alias c="clear"
 alias nix-shell="nix-shell --run zsh"
 
 # Shell integrations
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
@@ -88,4 +89,3 @@ fi
 if [ -f /nix/var/nix/profiles/per-user/root/channels/nixos/programs.sqlite ]; then
   zinit snippet OMZP::command-not-found
 fi
-
