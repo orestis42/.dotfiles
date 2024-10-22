@@ -89,3 +89,5 @@ fi
 if [ -f /nix/var/nix/profiles/per-user/root/channels/nixos/programs.sqlite ]; then
   zinit snippet OMZP::command-not-found
 fi
+
+export PATH="/opt/avr8-gnu-toolchain_linu_x86_64/bin:$PATH"
