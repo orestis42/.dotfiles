@@ -72,3 +72,6 @@ shopt -s checkwinsize
 
 export PATH=$HOME/.local/bin:$PATH
 
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/orestis/.lmstudio/bin"

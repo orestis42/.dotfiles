@@ -91,3 +91,9 @@ if [ -f /nix/var/nix/profiles/per-user/root/channels/nixos/programs.sqlite ]; th
 fi
 
 export PATH="/opt/avr8-gnu-toolchain_linu_x86_64/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/orestis/.lmstudio/bin"
+
+# opam configuration
+[[ ! -r /home/orestis/.opam/opam-init/init.zsh ]] || source /home/orestis/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null

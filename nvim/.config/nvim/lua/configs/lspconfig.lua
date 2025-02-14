@@ -9,7 +9,7 @@ local servers = {
   "clangd",            -- C/C++
   "lua_ls",            -- Lua
   "rust_analyzer",     -- Rust
-  "ruff_lsp",          -- Python
+  "ruff",          -- Python
 }
 
 -- lsps with default config
@@ -89,7 +89,7 @@ lspconfig.rust_analyzer.setup {
 }
 
 -- Custom config for Ruff LSP (Python)
-lspconfig.ruff_lsp.setup {
+lspconfig.ruff.setup {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
   capabilities = nvlsp.capabilities,
