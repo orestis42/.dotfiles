@@ -9,7 +9,8 @@ local servers = {
   "clangd",            -- C/C++
   "lua_ls",            -- Lua
   "rust_analyzer",     -- Rust
-  "ruff",          -- Python
+  "ruff",              -- Python
+  "ocamllsp",          -- OCaml
 }
 
 -- lsps with default config
@@ -100,6 +101,16 @@ lspconfig.ruff.setup {
   },
 }
 
+-- Custom config for ocamllsp
+lspconfig.ocamllsp.setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  cmd = { "ocamllsp" },
+  filetypes = { "ocaml", "ocaml.interface" },
+  root_dir = lspconfig.util.root_pattern("*.opam", "esy.json", "package.json", ".git"),
+}
+
 -- Formatter settings using null-ls (for clang-format, swiftlint, xmlformatter, codespell)
 local null_ls = require "null-ls"
 
@@ -109,10 +120,10 @@ null_ls.setup {
     null_ls.builtins.formatting.swiftlint,
     null_ls.builtins.formatting.xmlformat,
     null_ls.builtins.diagnostics.codespell.with {
-      filetypes = { "markdown", "text" }, -- spell checking for markdown and text
+      filetypes = { "markdown", "text" },
     },
   },
-  on_attach = function(client, bufnr)
+  on_attach = function(client)
     if client.server_capabilities.documentFormattingProvider then
       vim.api.nvim_command [[augroup Format]]
       vim.api.nvim_command [[autocmd! * <buffer>]]
