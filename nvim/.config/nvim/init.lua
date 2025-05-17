@@ -1,7 +1,6 @@
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
 vim.g.mapleader = " "
 
--- bootstrap lazy and all plugins
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
 if not vim.uv.fs_stat(lazypath) then
@@ -13,7 +12,6 @@ vim.opt.rtp:prepend(lazypath)
 
 local lazy_config = require "configs.lazy"
 
--- load plugins
 require("lazy").setup({
   {
     "NvChad/NvChad",
@@ -25,7 +23,23 @@ require("lazy").setup({
   { import = "plugins" },
 }, lazy_config)
 
--- load theme
+local nvchad_lspconfig = require("nvchad.configs.lspconfig")
+local original_on_attach = nvchad_lspconfig.on_attach
+nvchad_lspconfig.on_attach = function(client, bufnr)
+  local temp_client = setmetatable({}, {
+    __index = function(_, key)
+      if key == "supports_method" then
+        return function(_, method)
+          return client.server_capabilities[method .. "Provider"] or false
+        end
+      end
+      return client[key]
+    end
+  })
+
+  original_on_attach(temp_client, bufnr)
+end
+
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
 
@@ -35,3 +49,10 @@ require "nvchad.autocmds"
 vim.schedule(function()
   require "mappings"
 end)
+
+vim.filetype.add({
+  extension = {
+    mll = "ocaml.ocamllex",
+    mly = "ocaml.menhir"
+  }
+})

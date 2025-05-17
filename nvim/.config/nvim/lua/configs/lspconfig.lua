@@ -1,16 +1,14 @@
--- load defaults i.e lua_lsp
-require("nvchad.configs.lspconfig").defaults()
-
-local lspconfig = require "lspconfig"
-local nvlsp = require "nvchad.configs.lspconfig"
+-- Load NvChad defaults (patched in init.lua)
+local nvlsp = require("nvchad.configs.lspconfig")
+local lspconfig = require("lspconfig")
 
 -- List of LSP servers
 local servers = {
-  "clangd",            -- C/C++
-  "lua_ls",            -- Lua
-  "rust_analyzer",     -- Rust
-  "ruff",              -- Python
-  "ocamllsp",          -- OCaml
+  "clangd",        -- C/C++
+  "lua_ls",        -- Lua
+  "rust_analyzer", -- Rust
+  "ruff",          -- Python
+  "ocamllsp",      -- OCaml
 }
 
 -- lsps with default config
@@ -30,11 +28,11 @@ lspconfig.clangd.setup {
   filetypes = { "c", "cpp", "objc", "objcpp" },
   cmd = { "clangd", "--background-index" },
   flags = {
-    debounce_text_changes = 150,  -- to reduce the number of diagnostics updates
+    debounce_text_changes = 150, -- to reduce the number of diagnostics updates
   },
   init_options = {
-    fallbackFlags = { "-std=c++20" },  -- Use C++20 standard or change according to your project
-    clangdFileStatus = true,           -- Enable file status updates
+    fallbackFlags = { "-std=c++20" }, -- Use C++20 standard or change according to your project
+    clangdFileStatus = true,          -- Enable file status updates
   },
   settings = {
     clangd = {
@@ -107,29 +105,6 @@ lspconfig.ocamllsp.setup {
   on_init = nvlsp.on_init,
   capabilities = nvlsp.capabilities,
   cmd = { "ocamllsp" },
-  filetypes = { "ocaml", "ocaml.interface" },
-  root_dir = lspconfig.util.root_pattern("*.opam", "esy.json", "package.json", ".git"),
+  filetypes = { "ocaml", "ocaml.interface", "ocaml.ocamllex", "ocaml.menhir", "reason", "dune" },
+  root_dir = lspconfig.util.root_pattern("*.opam", "esy.json", "package.json", ".git", "dune-project", "dune-workspace"),
 }
-
--- Formatter settings using null-ls (for clang-format, swiftlint, xmlformatter, codespell)
-local null_ls = require "null-ls"
-
-null_ls.setup {
-  sources = {
-    null_ls.builtins.formatting.clang_format,
-    null_ls.builtins.formatting.swiftlint,
-    null_ls.builtins.formatting.xmlformat,
-    null_ls.builtins.diagnostics.codespell.with {
-      filetypes = { "markdown", "text" },
-    },
-  },
-  on_attach = function(client)
-    if client.server_capabilities.documentFormattingProvider then
-      vim.api.nvim_command [[augroup Format]]
-      vim.api.nvim_command [[autocmd! * <buffer>]]
-      vim.api.nvim_command [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format({ timeout_ms = 2000 })]]
-      vim.api.nvim_command [[augroup END]]
-    end
-  end,
-}
-

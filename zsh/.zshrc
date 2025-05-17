@@ -61,6 +61,8 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # Aliases
+alias danac='~/Development/dana_compiler/_build/default/src/main.exe'
+alias getcode='find . -path "./current code.txt" -prune -o -path "./.git" -prune -o -type f \( -name "*.c" -o -name "*.h" -o -name "*.sh" -o -name "*.py" -o -name "*.ml"-o -iname "Makefile" -o -iname "GNUmakefile" \) -exec sh -c '\''cat "$1"; printf "\n\n"'\'' _ {} \; > "current code.txt"'
 alias ls='ls --color'
 alias ll='ls -lah --color'
 alias vim='nvim'
